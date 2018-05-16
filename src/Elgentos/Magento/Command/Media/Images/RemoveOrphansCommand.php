@@ -42,7 +42,12 @@ class RemoveOrphansCommand extends AbstractMagentoCommand
                     continue;
                 }
                 $filename = DS . implode(DS, array_slice(explode(DS, $file), -3));
-                $results = $db->fetchAll('SELECT * FROM catalog_product_entity_media_gallery WHERE value = ?', $filename);
+                $tableMediaGallery = $resource->getTableName('catalog_product_entity_media_gallery');
+                $results = $db->select()
+                     ->from($tableMediaGallery)
+                     ->where('value = ?', $filename)
+                     ->query()
+                     ->fetchAll();
                 if (count($results) == 0) {
                     if(!$dryRun) {
                         unlink($file);
